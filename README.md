@@ -1,5 +1,7 @@
 # PocketBase MCP Server
 
+[![Maintained_By Mabel Data](https://img.shields.io/badge/Maintained_By-MabelData-purple)](https://github.com/mabeldata/pocketbase-mcp/blob/main/LICENSE)
+
 This is an MCP server that interacts with a PocketBase instance. It allows you to fetch, list, create, update, and manage records and files in your PocketBase collections.
 
 ## Installation
