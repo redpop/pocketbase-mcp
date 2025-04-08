@@ -30,7 +30,9 @@ These variables need to be configured when adding the server to Cline (see Cline
 
 ## Available Tools
 
-The server provides the following tools:
+The server provides the following tools, organized by category:
+
+### Record Management
 
 -   **fetch_record**: Fetch a single record from a PocketBase collection by ID.
     -   *Input Schema*:
@@ -241,6 +243,264 @@ The server provides the following tools:
         }
         ```
         *Note: This tool returns the file URL. The actual download needs to be performed by the client using this URL.*
+
+### Collection Management
+
+-   **list_collections**: List all collections in the PocketBase instance.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        }
+        ```
+
+-   **get_collection_schema**: Get the schema of a PocketBase collection.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "collection": {
+              "type": "string",
+              "description": "The name of the PocketBase collection."
+            }
+          },
+          "required": [
+            "collection"
+          ]
+        }
+        ```
+
+### Migration Management
+
+-   **set_migrations_directory**: Set the directory where migration files will be created and read from.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "customPath": { 
+              "type": "string", 
+              "description": "Custom path for migrations. If not provided, defaults to 'pb_migrations' in the current working directory." 
+            }
+          }
+        }
+        ```
+
+-   **create_migration**: Create a new, empty PocketBase migration file with a timestamped name.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "description": { 
+              "type": "string", 
+              "description": "A brief description for the migration filename (e.g., 'add_user_email_index')." 
+            }
+          },
+          "required": ["description"]
+        }
+        ```
+
+-   **create_collection_migration**: Create a migration file specifically for creating a new PocketBase collection.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "description": { 
+              "type": "string", 
+              "description": "Optional description override for the filename." 
+            },
+            "collectionDefinition": {
+              "type": "object",
+              "description": "The full schema definition for the new collection (including name, id, fields, rules, etc.).",
+              "additionalProperties": true
+            }
+          },
+          "required": ["collectionDefinition"]
+        }
+        ```
+
+-   **add_field_migration**: Create a migration file for adding a field to an existing collection.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "collectionNameOrId": { 
+              "type": "string", 
+              "description": "The name or ID of the collection to update." 
+            },
+            "fieldDefinition": {
+              "type": "object",
+              "description": "The schema definition for the new field.",
+              "additionalProperties": true
+            },
+            "description": { 
+              "type": "string", 
+              "description": "Optional description override for the filename." 
+            }
+          },
+          "required": ["collectionNameOrId", "fieldDefinition"]
+        }
+        ```
+
+-   **list_migrations**: List all migration files found in the PocketBase migrations directory.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": false
+        }
+        ```
+
+-   **apply_migration**: Apply a specific migration file.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "migrationFile": { 
+              "type": "string", 
+              "description": "Name of the migration file to apply." 
+            }
+          },
+          "required": ["migrationFile"]
+        }
+        ```
+
+-   **revert_migration**: Revert a specific migration file.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "migrationFile": { 
+              "type": "string", 
+              "description": "Name of the migration file to revert." 
+            }
+          },
+          "required": ["migrationFile"]
+        }
+        ```
+
+-   **apply_all_migrations**: Apply all pending migrations.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "appliedMigrations": { 
+              "type": "array", 
+              "items": { "type": "string" },
+              "description": "Array of already applied migration filenames." 
+            }
+          }
+        }
+        ```
+
+-   **revert_to_migration**: Revert migrations up to a specific target.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "targetMigration": { 
+              "type": "string", 
+              "description": "Name of the migration to revert to (exclusive). Use empty string to revert all." 
+            },
+            "appliedMigrations": { 
+              "type": "array", 
+              "items": { "type": "string" },
+              "description": "Array of already applied migration filenames." 
+            }
+          },
+          "required": ["targetMigration"]
+        }
+        ```
+
+## Migration System
+
+The PocketBase MCP Server includes a comprehensive migration system for managing database schema changes. This system allows you to:
+
+1. Create migration files with timestamped names
+2. Generate migrations for common operations (creating collections, adding fields)
+3. Apply and revert migrations individually or in batches
+4. Track which migrations have been applied
+
+### Migration File Format
+
+Migration files are JavaScript files with a timestamp prefix and descriptive name:
+
+```javascript
+// 1744005374_update_transactions_add_debt_link.js
+/// <reference path="../pb_data/types.d.ts" />
+migrate((app) => {
+  // Up migration code here
+  return app.save();
+}, (app) => {
+  // Down migration code here
+  return app.save();
+});
+```
+
+Each migration has an "up" function for applying changes and a "down" function for reverting them.
+
+### Usage Examples
+
+**Setting a custom migrations directory:**
+```javascript
+await setMigrationsDirectory("./my_migrations");
+```
+
+**Creating a basic migration:**
+```javascript
+await createNewMigration("add_user_email_index");
+```
+
+**Creating a collection migration:**
+```javascript
+await createCollectionMigration({
+  id: "users",
+  name: "users",
+  fields: [
+    { name: "email", type: "email", required: true }
+  ]
+});
+```
+
+**Adding a field to a collection:**
+```javascript
+await createAddFieldMigration("users", {
+  name: "address",
+  type: "text"
+});
+```
+
+**Applying migrations:**
+```javascript
+// Apply a specific migration
+await applyMigration("1744005374_update_transactions_add_debt_link.js", pocketbaseInstance);
+
+// Apply all pending migrations
+await applyAllMigrations(pocketbaseInstance);
+```
+
+**Reverting migrations:**
+```javascript
+// Revert a specific migration
+await revertMigration("1744005374_update_transactions_add_debt_link.js", pocketbaseInstance);
+
+// Revert to a specific point (exclusive)
+await revertToMigration("1743958155_update_transactions_add_relation_to_itself.js", pocketbaseInstance);
+
+// Revert all migrations
+await revertToMigration("", pocketbaseInstance);
+```
 
 ## Cline Installation
 
