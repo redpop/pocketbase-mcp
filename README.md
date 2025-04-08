@@ -24,7 +24,7 @@ This is an MCP server that interacts with a PocketBase instance. It allows you t
 This server requires the following environment variables to be set:
 
 -   `POCKETBASE_API_URL`: The URL of your PocketBase instance (e.g., `http://127.0.0.1:8090`). Defaults to `http://127.0.0.1:8090` if not set.
--   `POCKETBASE_ADMIN_TOKEN`: An admin authentication token for your PocketBase instance. **This is required.** You can generate this from your PocketBase admin UI.
+-   `POCKETBASE_ADMIN_TOKEN`: An admin authentication token for your PocketBase instance. **This is required.** You can generate this from your PocketBase admin UI, see [API KEYS](https://pocketbase.io/docs/authentication/#api-keys).
 
 These variables need to be configured when adding the server to Cline (see Cline Installation section).
 
