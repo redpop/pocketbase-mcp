@@ -72,4 +72,20 @@ export interface DownloadFileArgs {
 
 export interface ListCollectionsArgs {} // No arguments
 
+// Log API tool argument types
+export interface ListLogsArgs {
+  page?: number;
+  perPage?: number;
+  filter?: string;
+  sort?: string;
+}
+
+export interface GetLogArgs {
+  id: string;
+}
+
+export interface GetLogsStatsArgs {
+  filter?: string;
+}
+
 // Add types for new migration tools later

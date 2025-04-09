@@ -275,6 +275,68 @@ The server provides the following tools, organized by category:
         }
         ```
 
+### Log Management
+
+> **Note:** The Logs API requires admin authentication and may not be available in all PocketBase instances or configurations. These tools interact with the PocketBase Logs API as documented at https://pocketbase.io/docs/api-logs/.
+
+-   **list_logs**: List API request logs from PocketBase with filtering, sorting, and pagination.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "page": {
+              "type": "number",
+              "description": "Page number (defaults to 1).",
+              "minimum": 1
+            },
+            "perPage": {
+              "type": "number",
+              "description": "Items per page (defaults to 30, max 500).",
+              "minimum": 1,
+              "maximum": 500
+            },
+            "filter": {
+              "type": "string",
+              "description": "PocketBase filter string (e.g., \"method='GET'\")."
+            }
+          },
+          "required": []
+        }
+        ```
+
+-   **get_log**: Get a single API request log by ID.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The ID of the log to fetch."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+        ```
+
+-   **get_logs_stats**: Get API request logs statistics with optional filtering.
+    -   *Input Schema*:
+        ```json
+        {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "type": "string",
+              "description": "PocketBase filter string (e.g., \"method='GET'\")."
+            }
+          },
+          "required": []
+        }
+        ```
+
 ### Migration Management
 
 -   **set_migrations_directory**: Set the directory where migration files will be created and read from.
@@ -527,7 +589,14 @@ To use this server with Cline, you need to add it to your MCP settings file (`cl
             "POCKETBASE_ADMIN_TOKEN": "<YOUR_POCKETBASE_ADMIN_TOKEN>"
           },
           "disabled": false, // Ensure it's enabled
-          "autoApprove": [] // Default auto-approve settings
+          "autoApprove": [
+            "fetch_record",
+            "list_collections",
+            "get_collection_schema",
+            "list_logs",
+            "get_log",
+            "get_logs_stats"
+          ] // Suggested auto-approve settings
         }
 
         // ... other servers might be listed here ...
