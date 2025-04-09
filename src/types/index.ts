@@ -1,4 +1,19 @@
 // Explicitly export needed types
-export type { ToolResult, ToolInfo, FetchRecordArgs, ListRecordsArgs, CreateRecordArgs, UpdateRecordArgs, GetCollectionSchemaArgs, UploadFileArgs, DownloadFileArgs, ListCollectionsArgs } from './tool-types.js';
+export type { 
+  ToolResult, 
+  ToolInfo, 
+  FetchRecordArgs, 
+  ListRecordsArgs, 
+  CreateRecordArgs, 
+  UpdateRecordArgs, 
+  GetCollectionSchemaArgs, 
+  UploadFileArgs, 
+  DownloadFileArgs, 
+  ListCollectionsArgs,
+  // Log API types
+  ListLogsArgs,
+  GetLogArgs,
+  GetLogsStatsArgs
+} from './tool-types.js';
 export * from './pocketbase-types.js'; // Keep wildcard export for potentially generated types
 export * from './migration-types.js'; // Keep wildcard export for now

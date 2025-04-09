@@ -8,6 +8,7 @@ import { listRecordTools, handleRecordToolCall } from './record-tools.js';
 import { listCollectionTools, handleCollectionToolCall } from './collection-tools.js';
 import { listFileTools, handleFileToolCall } from './file-tools.js';
 import { listMigrationTools, handleMigrationToolCall } from './migration-tools.js'; // Uncommented
+import { listLogTools, handleLogToolCall } from './log-tools.js'; // Import log tools
 
 // Combine all tool definitions
 export function registerTools(): { tools: ToolInfo[] } { // Use ToolInfo[]
@@ -16,6 +17,7 @@ export function registerTools(): { tools: ToolInfo[] } { // Use ToolInfo[]
         ...listCollectionTools(),
         ...listFileTools(),
         ...listMigrationTools(), // Uncommented
+        ...listLogTools(), // Add log tools
     ];
     return { tools };
 }
@@ -46,6 +48,8 @@ export async function handleToolCall(params: CallToolRequest['params'], pb: Pock
         return handleFileToolCall(name, toolArgs, pb);
     } else if (name === 'create_migration' || name === 'create_collection_migration' || name === 'add_field_migration' || name === 'list_migrations') {
         return handleMigrationToolCall(name, toolArgs, pb);
+    } else if (name === 'list_logs' || name === 'get_log' || name === 'get_logs_stats') {
+        return handleLogToolCall(name, toolArgs, pb);
     } else {
         throw methodNotFoundError(name);
     }
