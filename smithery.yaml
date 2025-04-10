@@ -1,0 +1,31 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - POCKETBASE_ADMIN_TOKEN
+    properties:
+      POCKETBASE_API_URL:
+        type: string
+        default: http://127.0.0.1:8090
+        description: The URL of your PocketBase instance.
+      POCKETBASE_ADMIN_TOKEN:
+        type: string
+        description: Your PocketBase admin token.
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({
+      command: 'node',
+      args: ['build/index.js'],
+      env: {
+        POCKETBASE_API_URL: config.POCKETBASE_API_URL,
+        POCKETBASE_ADMIN_TOKEN: config.POCKETBASE_ADMIN_TOKEN
+      }
+    })
+  exampleConfig:
+    POCKETBASE_API_URL: http://127.0.0.1:8090
+    POCKETBASE_ADMIN_TOKEN: dummy_admin_token
