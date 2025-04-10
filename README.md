@@ -1,10 +1,19 @@
 # PocketBase MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@mabeldata/pocketbase-mcp)](https://smithery.ai/server/@mabeldata/pocketbase-mcp)
 [![Maintained_By Mabel Data](https://img.shields.io/badge/Maintained_By-MabelData-purple)](https://github.com/mabeldata/pocketbase-mcp/blob/main/LICENSE)
 
 This is an MCP server that interacts with a PocketBase instance. It allows you to fetch, list, create, update, and manage records and files in your PocketBase collections.
 
 ## Installation
+
+### Installing via Smithery
+
+To install PocketBase MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mabeldata/pocketbase-mcp):
+
+```bash
+npx -y @smithery/cli install @mabeldata/pocketbase-mcp --client claude
+```
 
 1.  **Clone the repository (if you haven't already):**
     ```bash
