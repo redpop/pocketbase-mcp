@@ -14,7 +14,6 @@ This is an MCP server that interacts with a PocketBase instance. It allows you t
 - ✅ **Async Execution**: Fixed migration execution context for proper async/await support
 - ✅ **Template Syntax**: Corrected `migrate((app) => {...})` format
 - ✅ **Error Handling**: Improved migration parsing and validation
-
 ## Installation
 
 ### Installing via Smithery
